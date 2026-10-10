@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cricket Live Cams · Camera</title>
+<style>
+  :root{--bg:#fff5f5;--card:#fff;--line:#fecdd3;--red:#e11d48;--red-d:#be123c;--red-l:#fff1f2;--red-m:#ffe4e6;
+        --text:#3f0d16;--muted:#9f6b73;--ok:#16a34a;--shadow:0 8px 28px rgba(225,29,72,.12)}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:
+       radial-gradient(700px 360px at 100% -10%,#ffe4e6 0,transparent 60%),var(--bg);color:var(--text);
+       min-height:100vh;padding:max(14px,env(safe-area-inset-top)) 16px max(18px,env(safe-area-inset-bottom))}
+  .wrap{max-width:520px;margin:0 auto}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#fb7185,var(--red-d));
+        display:grid;place-items:center;color:#fff;font-size:21px;box-shadow:0 4px 12px rgba(225,29,72,.35)}
+  h1{font-size:18px}header p{font-size:12px;color:var(--muted)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+  .preview{position:relative;border-radius:16px;overflow:hidden;background:#2a0a10;aspect-ratio:16/9;display:grid;place-items:center}
+  .preview video{width:100%;height:100%;object-fit:cover}
+  .ph{position:absolute;color:#fecdd3;font-size:14px;text-align:center;padding:10px}
+  .badge{position:absolute;left:10px;top:10px;display:none;align-items:center;gap:6px;background:var(--red);color:#fff;
+         font-size:11px;font-weight:800;letter-spacing:1px;padding:4px 10px;border-radius:7px}
+  .badge.on{display:inline-flex;animation:pulse 1.6s infinite}
+  @keyframes pulse{50%{opacity:.55}}
+  .status{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;font-weight:600}
+  .dot{width:10px;height:10px;border-radius:50%;background:#f59e0b;flex:none}
+  .dot.on{background:var(--ok);box-shadow:0 0 0 4px rgba(22,163,74,.18)}
+  .dot.off{background:#ef4444}
+  label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:12px 0 6px}
+  input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;font-size:15px;background:var(--red-l);
+        color:var(--text);outline:none}
+  input:focus,select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(225,29,72,.15)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  button{cursor:pointer;border:0;border-radius:14px;padding:14px;font-size:15px;font-weight:700;width:100%;transition:.15s}
+  .primary{background:var(--red);color:#fff;box-shadow:0 6px 16px rgba(225,29,72,.3)}
+  .primary:active{background:var(--red-d)}
+  .ghost{background:var(--red-m);color:var(--red-d)}
+  .stop{background:#fff;color:var(--red-d);border:2px solid var(--red)}
+  .btns{display:grid;gap:10px;margin-top:14px}
+  .hide{display:none!important}
+  .tip{font-size:12px;color:var(--muted);line-height:1.6;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">🏏</div>
+    <div><h1>Camera Mode</h1><p>Stream this phone to the live dashboard</p></div>
+  </header>
+
+  <div class="card">
+    <div class="preview">
+      <video id="preview" autoplay playsinline muted></video>
+      <div class="ph" id="ph">📷 Camera preview will appear here</div>
+      <div class="badge" id="badge">● LIVE</div>
+    </div>
+    <div class="status"><span class="dot" id="dot"></span><span id="status">Ready</span></div>
+  </div>
+
+  <div class="card">
+    <label for="room">Room code</label>
+    <input id="room" maxlength="8" autocapitalize="characters" autocomplete="off" placeholder="e.g. K7M2QX">
+
+    <label for="name">Camera name / position</label>
+    <input id="name" list="positions" maxlength="24" placeholder="e.g. Square Leg">
+    <datalist id="positions">
+      <option value="Behind Stumps"><option value="Square Leg"><option value="Long On"><option value="Long Off">
+      <option value="Cover"><option value="Mid Wicket"><option value="Third Man"><option value="Fine Leg">
+      <option value="Pavilion"><option value="Bowler End">
+    </datalist>
+
+    <div class="row">
+      <div>
+        <label for="quality">Quality</label>
+        <select id="quality">
+          <option value="480">480p · data saver</option>
+          <option value="720" selected>720p · balanced</option>
+          <option value="1080">1080p · best</option>
+        </select>
+      </div>
+      <div>
+        <label for="facing">Camera</label>
+        <select id="facing">
+          <option value="environment" selected>Back</option>
+          <option value="user">Front</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btns">
+      <button class="primary" id="start">▶ Start streaming</button>
+      <button class="stop hide" id="stop">■ Stop streaming</button>
+    </div>
+  </div>
+
+  <p class="tip">Keep this page open and the screen on while streaming.<br>Use the phone horizontally for the best view.</p>
+</div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+(() => {
+  // Must match the settings in dashboard.html
+  const ICE = { iceServers: [
+    { urls: "stun:stun.l.google.com:19302" },
+    { urls: "stun:stun1.l.google.com:19302" },
+    { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" },
+    { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" },
+    { urls: "turns:openrelay.metered.ca:443?transport=tcp", username: "openrelayproject", credential: "openrelayproject" }
+  ]};
+
+  const $ = id => document.getElementById(id);
+  const store = {
+    get: k => { try { return localStorage.getItem(k); } catch { return null; } },
+    set: (k, v) => { try { localStorage.setItem(k, v); } catch {} }
+  };
+
+  let stream = null, peer = null, call = null, live = false, wake = null, retryTimer = null, dropTimer = null;
+
+  // Prefill from QR link
+  const q = new URLSearchParams(location.search);
+  $("room").value = (q.get("room") || store.get("crk_cam_room") || "").toUpperCase();
+  $("name").value = store.get("crk_cam_name") || "";
+  $("quality").value = store.get("crk_cam_q") || "720";
+
+  function setStatus(text, cls) {
+    $("status").textContent = text;
+    $("dot").className = "dot " + (cls || "");
+  }
+
+  /* ---------- camera ---------- */
+  async function getStream() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      throw new Error("Camera is not available. Open this page over HTTPS in Chrome or Safari.");
+    }
+    const h = parseInt($("quality").value, 10);
+    return navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: {
+        facingMode: { ideal: $("facing").value },
+        width: { ideal: Math.round(h * 16 / 9) }, height: { ideal: h },
+        frameRate: { ideal: 30, max: 30 }
+      }
+    });
+  }
+
+  async function applyNewStream() {
+    const fresh = await getStream();
+    const track = fresh.getVideoTracks()[0];
+    if (call && call.peerConnection) {
+      const sender = call.peerConnection.getSenders().find(s => s.track && s.track.kind === "video");
+      if (sender) await sender.replaceTrack(track);
+    }
+    if (stream) stream.getTracks().forEach(t => t.stop());
+    stream = fresh;
+    $("preview").srcObject = stream;
+  }
+
+  /* ---------- streaming ---------- */
+  async function start() {
+    const room = $("room").value.trim().toUpperCase();
+    if (!room) { setStatus("Enter the room code first", "off"); $("room").focus(); return; }
+    store.set("crk_cam_room", room);
+    store.set("crk_cam_name", $("name").value.trim());
+    store.set("crk_cam_q", $("quality").value);
+
+    try {
+      setStatus("Requesting camera…");
+      stream = await getStream();
+    } catch (e) {
+      setStatus(e.name === "NotAllowedError" ? "Camera permission was denied" : e.message, "off");
+      return;
+    }
+    $("preview").srcObject = stream;
+    $("ph").classList.add("hide");
+    live = true;
+    toggleUI(true);
+    requestWake();
+
+    setStatus("Connecting to dashboard…");
+    peer = new Peer({ config: ICE });
+    peer.on("open", connect);
+    peer.on("disconnected", () => { try { peer.reconnect(); } catch {} });
+    peer.on("error", err => {
+      if (err.type === "peer-unavailable") {
+        setStatus("Dashboard not found. Check room code… retrying", "off");
+        scheduleRetry();
+      } else {
+        setStatus("Connection error: " + err.type, "off");
+        scheduleRetry();
+      }
+    });
+  }
+
+  function connect() {
+    if (!live || !peer || !peer.open) return;
+    if (call) { try { call.close(); } catch {} }
+    const room = $("room").value.trim().toUpperCase();
+    call = peer.call("cricketcam-" + room, stream, { metadata: { name: $("name").value.trim() || "Camera" } });
+    if (!call) { scheduleRetry(); return; }
+    const mine = call;
+    mine.on("close", () => { if (call === mine && live) { setStatus("Disconnected. Reconnecting…", "off"); $("badge").classList.remove("on"); scheduleRetry(); } });
+    mine.on("error", () => { if (call === mine) scheduleRetry(); });
+
+    const pc = mine.peerConnection;
+    if (pc) pc.addEventListener("iceconnectionstatechange", () => {
+      const s = pc.iceConnectionState;
+      clearTimeout(dropTimer);
+      if (s === "connected" || s === "completed") {
+        setStatus("Live · streaming to dashboard", "on");
+        $("badge").classList.add("on");
+      } else if (s === "disconnected") {
+        setStatus("Weak connection… reconnecting", "");
+        dropTimer = setTimeout(() => { if (call === mine) scheduleRetry(); }, 7000);
+      } else if (s === "failed") {
+        setStatus("Connection failed. Retrying…", "off");
+        $("badge").classList.remove("on");
+        scheduleRetry();
+      }
+    });
+  }
+
+  function scheduleRetry() {
+    if (!live || retryTimer) return;
+    retryTimer = setTimeout(() => { retryTimer = null; connect(); }, 3000);
+  }
+
+  function stop() {
+    live = false;
+    clearTimeout(retryTimer); retryTimer = null; clearTimeout(dropTimer);
+    if (call) { try { call.close(); } catch {} call = null; }
+    if (peer) { try { peer.destroy(); } catch {} peer = null; }
+    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    $("preview").srcObject = null;
+    $("ph").classList.remove("hide");
+    $("badge").classList.remove("on");
+    releaseWake();
+    toggleUI(false);
+    setStatus("Stopped");
+  }
+
+  function toggleUI(on) {
+    $("start").classList.toggle("hide", on);
+    $("stop").classList.toggle("hide", !on);
+  }
+
+  /* ---------- keep screen awake ---------- */
+  async function requestWake() {
+    try { if ("wakeLock" in navigator) wake = await navigator.wakeLock.request("screen"); } catch {}
+  }
+  function releaseWake() { try { wake && wake.release(); } catch {} wake = null; }
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && live) requestWake(); });
+
+  /* ---------- events ---------- */
+  $("start").addEventListener("click", start);
+  $("stop").addEventListener("click", stop);
+  $("room").addEventListener("input", e => { e.target.value = e.target.value.toUpperCase(); });
+
+  $("name").addEventListener("change", () => {          // name is sent when the call starts
+    store.set("crk_cam_name", $("name").value.trim());
+    if (live) connect();
+  });
+  const live_change = async () => {
+    store.set("crk_cam_q", $("quality").value);
+    if (!live) return;
+    try { await applyNewStream(); } catch (e) { setStatus("Could not switch camera: " + e.message, "off"); }
+  };
+  $("facing").addEventListener("change", live_change);
+  $("quality").addEventListener("change", live_change);
+})();
+</script>
+</body>
+</html>
